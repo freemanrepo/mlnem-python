@@ -2,4 +2,5 @@ tensorflow
 numpy
 opencv-python
 Cython
+matplotlib
 ./darkflow
