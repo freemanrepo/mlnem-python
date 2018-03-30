@@ -3,4 +3,5 @@ numpy
 opencv-python
 Cython
 matplotlib
+pymediainfo
 ./darkflow
