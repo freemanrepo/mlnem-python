@@ -2,14 +2,13 @@
 mlnem
 """
 
-import matplotlib.pyplot as plot
 import cv2
 from darkflow.net.build import TFNet
 
 import imgtools.drawer as drawer
 import config
 
-def process_image_with_path(path, debug_mode=False):
+def process_video_with_path(path):
     """
     process_with_path
     """
@@ -27,11 +26,17 @@ def process_image_with_path(path, debug_mode=False):
         options['metaLoad'] = config.__dir__ + '/bin/yolo.meta'
 
     tfnet = TFNet(options)
-    imgcv = cv2.cvtColor(cv2.imread(path), cv2.COLOR_BGR2RGB)
-    result = tfnet.return_predict(imgcv)
 
-    _, ax_obj = plot.subplots(1)
-    ax_obj.imshow(imgcv)
-    drawer.process_image(ax_obj, result, debug_mode=debug_mode)
+    cap = cv2.VideoCapture(path)
 
-    plot.show()
+    while cap.isOpened():
+        _, frame = cap.read()
+        imgcv = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        result = tfnet.return_predict(imgcv)
+        drawer.process_video(imgcv, result)
+        cv2.imshow('frame', cv2.cvtColor(imgcv, cv2.COLOR_BGR2RGB))
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()

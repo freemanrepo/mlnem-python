@@ -8,7 +8,8 @@ import sys
 import os
 import config
 
-from network import image
+from pymediainfo import MediaInfo
+from network import image, video
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -27,13 +28,13 @@ def parse_arguments(args):
 
     parser.add_argument("-p", "--path",
                         type=str, default=None,
-                        help="Path to image/video file.")
+                        help="Path to image/video file")
     parser.add_argument("-V", "--version",
                         action='store_true', default=False,
-                        help="Show current version.")
+                        help="Show current version")
     parser.add_argument("-d", "--debug",
                         action='store_true', default=False,
-                        help="Set logging level to debug.")
+                        help="Set logging level to debug")
 
     return parser.parse_args(args), parser
 
@@ -49,9 +50,19 @@ def entry():
     elif args.path:
         if os.path.isfile(args.path):
             if imghdr.what(args.path):
-                image.process_with_path(args.path, debug_mode=args.debug)
+                image.process_image_with_path(args.path, debug_mode=args.debug)
             else:
-                print('[mlnem] invalid image file')
+                file_info = MediaInfo.parse(args.path)
+                is_video = False
+                for track in file_info.tracks:
+                    if track.track_type == "Video":
+                        is_video = True
+                        break
+
+                if is_video:
+                    video.process_video_with_path(args.path)
+                else:
+                    print('[mlnem] invalid file')
         else:
             print('[mlnem] file doesn\'t exist')
     else:
