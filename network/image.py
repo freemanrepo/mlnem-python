@@ -9,7 +9,7 @@ from darkflow.net.build import TFNet
 import imgtools.drawer as drawer
 import config
 
-def process_image_with_path(path, debug_mode=False, output=None):
+def process_image_with_path(path, use_tiny_yolo=False, debug_mode=False, output=None):
     """
     process_with_path
     """
@@ -17,7 +17,7 @@ def process_image_with_path(path, debug_mode=False, output=None):
     options = {}
     options['threshold'] = 0.1
 
-    if config.usesTinyNetwork:
+    if config.usesTinyNetwork or use_tiny_yolo:
         print('[mlnem] configuring network using tiny-yolo')
         options['pbLoad'] = config.__dir__ + '/bin/tiny-yolo.pb'
         options['metaLoad'] = config.__dir__ + '/bin/tiny-yolo.meta'

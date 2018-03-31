@@ -32,15 +32,18 @@ def parse_arguments(args):
     parser.add_argument("-u", "--url",
                         type=str, default=None,
                         help="A url of a video stream to pass to the network")
+    parser.add_argument("-o", "--output",
+                        type=str, default=None,
+                        help="Write network result(s) as image/video to specified path")
     parser.add_argument("-V", "--version",
                         action='store_true', default=False,
                         help="Show current version")
     parser.add_argument("-d", "--debug",
                         action='store_true', default=False,
                         help="Set logging level to debug")
-    parser.add_argument("-o", "--output",
-                        type=str, default=None,
-                        help="Write network result(s) as image/video to specified path")
+    parser.add_argument("-t", "--use-tiny",
+                        action='store_true', default=False,
+                        help="Use tiny-yolo instead of full-yolo network")
 
     return parser.parse_args(args), parser
 
@@ -61,7 +64,7 @@ def entry():
                     exit(1)
 
             if imghdr.what(args.path):
-                image.process_image_with_path(args.path, debug_mode=args.debug, output=args.output)
+                image.process_image_with_path(args.path, use_tiny_yolo=args.use_tiny, debug_mode=args.debug, output=args.output)
             else:
                 file_info = MediaInfo.parse(args.path)
                 is_video = False
@@ -71,12 +74,12 @@ def entry():
                         break
 
                 if is_video:
-                    video.process_video_with_path(args.path, output=args.output)
+                    video.process_video_with_path(args.path, use_tiny_yolo=args.use_tiny, output=args.output)
                 else:
                     print('[mlnem] invalid file')
         else:
             print('[mlnem] file doesn\'t exist')
     elif args.url:
-        video.process_video_with_path(args.url, output=args.output)
+        video.process_video_with_path(args.url, use_tiny_yolo=args.use_tiny, output=args.output)
     else:
         parser.print_help()
