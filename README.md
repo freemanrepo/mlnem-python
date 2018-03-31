@@ -48,7 +48,7 @@ optional arguments:
   -h, --help            		  show this help message and exit
   -p PATH, --path PATH  		  Path to image/video file
   -u URL, --url URL     		  A url of a video stream to pass to the network
-  -o OUTPUT, --output OUTPUT  Write network result(s) as image/video to specified path
+  -o OUTPUT, --output OUTPUT              Write network result(s) as image/video to specified path
   -V, --version         		  Show current version
   -d, --debug           		  Set logging level to debug
   -t, --use-tiny        		  Use tiny-yolo instead of full-yolo network
