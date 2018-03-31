@@ -35,6 +35,9 @@ def parse_arguments(args):
     parser.add_argument("-d", "--debug",
                         action='store_true', default=False,
                         help="Set logging level to debug")
+    parser.add_argument("-o", "--output",
+                        type=str, default=None,
+                        help="Write network result as image/video to specified output path")
 
     return parser.parse_args(args), parser
 
@@ -49,8 +52,13 @@ def entry():
         print('mlnem ' + config.version)
     elif args.path:
         if os.path.isfile(args.path):
+            if args.output:
+                if os.path.isfile(args.output):
+                    print('[mlnem] file already exists at specified output path')
+                    exit(1)
+
             if imghdr.what(args.path):
-                image.process_image_with_path(args.path, debug_mode=args.debug)
+                image.process_image_with_path(args.path, debug_mode=args.debug, output=args.output)
             else:
                 file_info = MediaInfo.parse(args.path)
                 is_video = False
@@ -60,7 +68,7 @@ def entry():
                         break
 
                 if is_video:
-                    video.process_video_with_path(args.path)
+                    video.process_video_with_path(args.path, output=args.output)
                 else:
                     print('[mlnem] invalid file')
         else:

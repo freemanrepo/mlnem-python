@@ -9,7 +9,7 @@ from darkflow.net.build import TFNet
 import imgtools.drawer as drawer
 import config
 
-def process_image_with_path(path, debug_mode=False):
+def process_image_with_path(path, debug_mode=False, output=None):
     """
     process_with_path
     """
@@ -30,8 +30,11 @@ def process_image_with_path(path, debug_mode=False):
     imgcv = cv2.cvtColor(cv2.imread(path), cv2.COLOR_BGR2RGB)
     result = tfnet.return_predict(imgcv)
 
-    _, ax_obj = plot.subplots(1)
+    fig, ax_obj = plot.subplots(1)
     ax_obj.imshow(imgcv)
     drawer.process_image(ax_obj, result, debug_mode=debug_mode)
+
+    if output:
+        fig.savefig(output)
 
     plot.show()
