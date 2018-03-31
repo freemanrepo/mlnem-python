@@ -35,6 +35,7 @@ pip3 install -r requirements.txt
 python3 setup.py install
 ```
 
+After installing MLNEM with the instructions above, you need to download the following file from [here](http://cloud.alfhaily.me/qY0T) and extract the bin folder to the *mlnem-python* directory.
 
 
 ## Usage
