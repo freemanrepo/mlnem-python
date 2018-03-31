@@ -28,22 +28,22 @@ def parse_arguments(args):
 
     parser.add_argument("-p", "--path",
                         type=str, default=None,
-                        help="Path to image/video file")
+                        help="path to image/video file")
     parser.add_argument("-u", "--url",
                         type=str, default=None,
-                        help="A url of a video stream to pass to the network")
+                        help="url of a video stream to pass to the network")
     parser.add_argument("-o", "--output",
                         type=str, default=None,
-                        help="Write network result(s) as image/video to specified path")
+                        help="write network result(s) as image/video to specified path")
     parser.add_argument("-V", "--version",
                         action='store_true', default=False,
-                        help="Show current version")
+                        help="show current version")
     parser.add_argument("-d", "--debug",
                         action='store_true', default=False,
-                        help="Set logging level to debug")
+                        help="set logging level to debug")
     parser.add_argument("-t", "--use-tiny",
                         action='store_true', default=False,
-                        help="Use tiny-yolo instead of full-yolo network")
+                        help="use tiny-yolo instead of full-yolo network")
 
     return parser.parse_args(args), parser
 
