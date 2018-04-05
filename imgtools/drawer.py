@@ -33,13 +33,18 @@ def process_video(img_cv, network_results=None, debug_mode=False):
     process_video
     """
 
-    if network_results != None or len(network_results) == 0:
+    if network_results != None or not network_results:
+        found_person = False
+
         for result in network_results:
             if result['confidence'] < 0.4:
                 if debug_mode:
                     print('[mlnem] skipping ' + result['label'] + ' with low confidence: ' +
                           str('{0:.2f}'.format(result['confidence'] * 100)) + '%')
                 continue
+
+            if result['label'] == 'person':
+                found_person = True
 
             if debug_mode:
                 print('[mlnem] found a ' + result['label'] + ' with ' +
@@ -52,3 +57,7 @@ def process_video(img_cv, network_results=None, debug_mode=False):
             size, _ = cv2.getTextSize(result['label'], 0, 0.5, 1)
             cv2.rectangle(img_cv, (topleft['x'], topleft['y'] - size[1] - 6), (topleft['x'] + size[0], topleft['y']), (255,0,0), cv2.FILLED)
             cv2.putText(img_cv, result['label'], (topleft['x'], topleft['y'] - 6), 0, 0.5, (0, 0, 0), 1)
+        
+        return found_person
+
+    return False

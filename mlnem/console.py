@@ -35,6 +35,9 @@ def parse_arguments(args):
     parser.add_argument("-o", "--output",
                         type=str, default=None,
                         help="write network result(s) as image/video to specified path")
+    parser.add_argument("-w", "--slack-webhook",
+                        type=str, default=None,
+                        help="Passing a Slack webhook will run mlnem in security-guard mode")
     parser.add_argument("-V", "--version",
                         action='store_true', default=False,
                         help="show current version")
@@ -74,12 +77,12 @@ def entry():
                         break
 
                 if is_video:
-                    video.process_video_with_path(args.path, use_tiny_yolo=args.use_tiny, output=args.output)
+                    video.process_video_with_path(args.path, use_tiny_yolo=args.use_tiny, output=args.output, slack_webhook_url=args.slack_webhook)
                 else:
                     print('[mlnem] invalid file')
         else:
             print('[mlnem] file doesn\'t exist')
     elif args.url:
-        video.process_video_with_path(args.url, use_tiny_yolo=args.use_tiny, output=args.output)
+        video.process_video_with_path(args.url, use_tiny_yolo=args.use_tiny, output=args.output, slack_webhook_url=args.slack_webhook)
     else:
         parser.print_help()
