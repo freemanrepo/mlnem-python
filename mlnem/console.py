@@ -38,6 +38,9 @@ def parse_arguments(args):
     parser.add_argument("-w", "--slack-webhook",
                         type=str, default=None,
                         help="Passing a Slack webhook will run mlnem in security-guard mode")
+    parser.add_argument("-g", "--use-gpu",
+                        action='store_true', default=False,
+                        help="use gpu instead of cpu for processing image/video")
     parser.add_argument("-V", "--version",
                         action='store_true', default=False,
                         help="show current version")
@@ -67,7 +70,7 @@ def entry():
                     exit(1)
 
             if imghdr.what(args.path):
-                image.process_image_with_path(args.path, use_tiny_yolo=args.use_tiny, debug_mode=args.debug, output=args.output)
+                image.process_image_with_path(args.path, use_tiny_yolo=args.use_tiny, debug_mode=args.debug, output=args.output, use_gpu=args.use_gpu)
             else:
                 file_info = MediaInfo.parse(args.path)
                 is_video = False
@@ -77,12 +80,12 @@ def entry():
                         break
 
                 if is_video:
-                    video.process_video_with_path(args.path, use_tiny_yolo=args.use_tiny, output=args.output, slack_webhook_url=args.slack_webhook)
+                    video.process_video_with_path(args.path, use_tiny_yolo=args.use_tiny, output=args.output, slack_webhook_url=args.slack_webhook, use_gpu=args.use_gpu)
                 else:
                     print('[mlnem] invalid file')
         else:
             print('[mlnem] file doesn\'t exist')
     elif args.url:
-        video.process_video_with_path(args.url, use_tiny_yolo=args.use_tiny, output=args.output, slack_webhook_url=args.slack_webhook)
+        video.process_video_with_path(args.url, use_tiny_yolo=args.use_tiny, output=args.output, slack_webhook_url=args.slack_webhook, use_gpu=args.use_gpu)
     else:
         parser.print_help()

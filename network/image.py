@@ -9,13 +9,16 @@ from darkflow.net.build import TFNet
 import imgtools.drawer as drawer
 import config
 
-def process_image_with_path(path, use_tiny_yolo=False, debug_mode=False, output=None):
+def process_image_with_path(path, use_tiny_yolo=False, debug_mode=False, output=None, use_gpu=False):
     """
     process_with_path
     """
 
     options = {}
     options['threshold'] = 0.1
+
+    if use_gpu:
+        options['gpu'] = 1.0
 
     if config.usesTinyNetwork or use_tiny_yolo:
         print('[mlnem] configuring network using tiny-yolo')

@@ -23,13 +23,17 @@ def send_slack_payload(payload, webhook_url):
     if response.status_code != 200:
         print('[mlnem] request to slack returned an error: ' + str(response.status_code))
 
-def process_video_with_path(path, use_tiny_yolo=False, output=None, slack_webhook_url=None):
+def process_video_with_path(path, use_tiny_yolo=False, output=None, slack_webhook_url=None, use_gpu=False):
     """
     process_with_path
     """
 
     options = {}
     options['threshold'] = 0.1
+
+    if use_gpu:
+        options['gpu'] = 1.0
+
     slack_notification_timestamp = None
 
     if config.usesTinyNetwork or use_tiny_yolo:
