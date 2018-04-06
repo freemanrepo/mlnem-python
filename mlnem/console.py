@@ -38,6 +38,9 @@ def parse_arguments(args):
     parser.add_argument("-w", "--slack-webhook",
                         type=str, default=None,
                         help="Passing a Slack webhook will run mlnem in security-guard mode")
+    parser.add_argument("-s", "--skip-rate",
+                        type=int, default=1,
+                        help="Use this option to skip frames with processing video")
     parser.add_argument("-g", "--use-gpu",
                         action='store_true', default=False,
                         help="use gpu instead of cpu for processing image/video")
@@ -80,12 +83,12 @@ def entry():
                         break
 
                 if is_video:
-                    video.process_video_with_path(args.path, use_tiny_yolo=args.use_tiny, output=args.output, slack_webhook_url=args.slack_webhook, use_gpu=args.use_gpu)
+                    video.process_video_with_path(args.path, use_tiny_yolo=args.use_tiny, output=args.output, slack_webhook_url=args.slack_webhook, use_gpu=args.use_gpu, skip_rate=args.skip_rate)
                 else:
                     print('[mlnem] invalid file')
         else:
             print('[mlnem] file doesn\'t exist')
     elif args.url:
-        video.process_video_with_path(args.url, use_tiny_yolo=args.use_tiny, output=args.output, slack_webhook_url=args.slack_webhook, use_gpu=args.use_gpu)
+        video.process_video_with_path(args.url, use_tiny_yolo=args.use_tiny, output=args.output, slack_webhook_url=args.slack_webhook, use_gpu=args.use_gpu, skip_rate=args.skip_rate)
     else:
         parser.print_help()
