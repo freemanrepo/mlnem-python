@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/usr/local/bin/python3",
+    "python.pythonPath": "/Users/Majd/.pyenv/versions/3.6.5/bin/python",
     "python.linting.pylintArgs": [
         "--extension-pkg-whitelist=cv2"
     ]

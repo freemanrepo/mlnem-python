@@ -8,10 +8,14 @@ import sys
 import os
 import config
 
-from pymediainfo import MediaInfo
-from network import image, video
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+from pymediainfo import MediaInfo
+
+import warnings
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore",category=FutureWarning)
+    from network import image, video
 
 def parse_arguments(args):
     """Parse the command line arguments for the console commands.
@@ -35,15 +39,15 @@ def parse_arguments(args):
     parser.add_argument("-o", "--output",
                         type=str, default=None,
                         help="write network result(s) as image/video to specified path")
-    parser.add_argument("-w", "--slack-webhook",
-                        type=str, default=None,
-                        help="Passing a Slack webhook will run mlnem in security-guard mode")
     parser.add_argument("-s", "--skip-rate",
                         type=int, default=1,
                         help="Use this option to skip frames with processing video")
     parser.add_argument("-g", "--use-gpu",
                         action='store_true', default=False,
                         help="use gpu instead of cpu for processing image/video")
+    parser.add_argument("-w", "--webcam",
+                        action='store_true', default=False,
+                        help="Use webcam as video input source")
     parser.add_argument("-V", "--version",
                         action='store_true', default=False,
                         help="show current version")
@@ -65,6 +69,8 @@ def entry():
 
     if args.version:
         print('mlnem ' + config.version)
+    elif args.webcam:
+        video.process_video_with_path(0, use_tiny_yolo=args.use_tiny, output=args.output, use_gpu=args.use_gpu, skip_rate=args.skip_rate)
     elif args.path:
         if os.path.isfile(args.path):
             if args.output:
@@ -83,12 +89,12 @@ def entry():
                         break
 
                 if is_video:
-                    video.process_video_with_path(args.path, use_tiny_yolo=args.use_tiny, output=args.output, slack_webhook_url=args.slack_webhook, use_gpu=args.use_gpu, skip_rate=args.skip_rate)
+                    video.process_video_with_path(args.path, use_tiny_yolo=args.use_tiny, output=args.output, use_gpu=args.use_gpu, skip_rate=args.skip_rate)
                 else:
                     print('[mlnem] invalid file')
         else:
             print('[mlnem] file doesn\'t exist')
     elif args.url:
-        video.process_video_with_path(args.url, use_tiny_yolo=args.use_tiny, output=args.output, slack_webhook_url=args.slack_webhook, use_gpu=args.use_gpu, skip_rate=args.skip_rate)
+        video.process_video_with_path(args.url, use_tiny_yolo=args.use_tiny, output=args.output, use_gpu=args.use_gpu, skip_rate=args.skip_rate)
     else:
         parser.print_help()

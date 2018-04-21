@@ -11,19 +11,7 @@ from darkflow.net.build import TFNet
 import imgtools.drawer as drawer
 import config
 
-def send_slack_payload(payload, webhook_url):
-    """
-    send_slack_payload
-    """
-    response = requests.post(
-        webhook_url, data=json.dumps(payload),
-        headers={'Content-Type': 'application/json'}
-    )
-
-    if response.status_code != 200:
-        print('[mlnem] request to slack returned an error: ' + str(response.status_code))
-
-def process_video_with_path(path, use_tiny_yolo=False, output=None, slack_webhook_url=None, use_gpu=False, skip_rate=None):
+def process_video_with_path(path, use_tiny_yolo=False, output=None, use_gpu=False, skip_rate=None):
     """
     process_with_path
     """
@@ -33,8 +21,6 @@ def process_video_with_path(path, use_tiny_yolo=False, output=None, slack_webhoo
 
     if use_gpu:
         options['gpu'] = 1.0
-
-    slack_notification_timestamp = None
 
     if config.usesTinyNetwork or use_tiny_yolo:
         print('[mlnem] configuring network using tiny-yolo')
@@ -72,15 +58,8 @@ def process_video_with_path(path, use_tiny_yolo=False, output=None, slack_webhoo
             elif frame_index % skip_rate == 0:
                 last_result = tfnet.return_predict(imgcv)                
 
-            found_person = drawer.process_video(imgcv, last_result)
+            drawer.process_video(imgcv, last_result)
             colored = cv2.cvtColor(imgcv, cv2.COLOR_BGR2RGB)
-
-            if found_person and slack_webhook_url:
-                if slack_notification_timestamp is None or (time.time() - slack_notification_timestamp) > 60:
-                    print('[mlnem] threat detected')
-                    send_slack_payload({'text': 'A threat was detected!'}, slack_webhook_url)
-
-                slack_notification_timestamp = time.time()
 
             if output:
                 out.write(colored)
