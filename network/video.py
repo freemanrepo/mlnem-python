@@ -53,10 +53,13 @@ def process_video_with_path(path, use_tiny_yolo=False, output=None, use_gpu=Fals
         if ret:
             imgcv = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-            if last_result is None:
+            if skip_rate is None:
                 last_result = tfnet.return_predict(imgcv)
-            elif frame_index % skip_rate == 0:
-                last_result = tfnet.return_predict(imgcv)                
+            else:
+                if last_result is None:
+                    last_result = tfnet.return_predict(imgcv)
+                elif frame_index % skip_rate == 0:
+                    last_result = tfnet.return_predict(imgcv)
 
             drawer.process_video(imgcv, last_result)
             colored = cv2.cvtColor(imgcv, cv2.COLOR_BGR2RGB)
